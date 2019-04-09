@@ -1,41 +1,79 @@
 const crypto = require('crypto');
 const fetch = require("node-fetch");
 
-const password = 'daniel93';
+// const password = 'Password1234';
+//
+//
+// const fullPasswordHash = crypto.createHash('sha1')
+//     .update(password, 'utf8')
+//     .digest('hex')
+//     .toLocaleUpperCase();
+//
+// const firstFiveHashSubstring = fullPasswordHash.substring(0,5).toLocaleUpperCase();
+// const hashToSearch = fullPasswordHash.slice(5);
+//
+// async function searchPwnedPasswords(passwordSubstring){
+//     const url = 'https://api.pwnedpasswords.com/range/'+passwordSubstring;
+//     const response = await fetch(url);
+//     return await response.text();
+// }
+//
+// searchPwnedPasswords(firstFiveHashSubstring).then(passwords => {
+//     passwordMatch(passwords)
+// });
+//
+// function passwordMatch(passwordHashLst) {
+//     let lst = passwordHashLst.split("\n");
+//
+//     Object.values(lst).forEach(
+//         (value) =>{
+//             if(value.includes(hashToSearch)){
+//                 let breachCount = value.split(':')[1].slice(0, -1);
+//                 let warning = `${password} was found ${breachCount} times`;
+//                 console.log(warning);
+//             }
+//         }
+//     );
+// }
 
 
-const fullPasswordHash = crypto.createHash('sha1')
-    .update(password, 'utf8')
-    .digest('hex')
-    .toLocaleUpperCase();
+module.exports = class PwnedSearch {
 
-const firstFiveHashSubstring = fullPasswordHash.substring(0,5).toLocaleUpperCase();
-const hashToSearch = fullPasswordHash.slice(5);
+    wasMyPasswordOwned(password) {
+        this.callPwnedPasswords(this.getFirstFiveHashSubstring(password)).then(hashedPasswordLst => {
+            this.findPasswordMatch(hashedPasswordLst, password)
+        });
+    }
 
-// console.log('Full hashed password ---> ', fullPasswordHash);
-// console.log('First 5 Characters of the hashed password ---> ', firstFiveHashSubstring);
+    hashPassword(password) {
+        return crypto.createHash('sha1')
+            .update(password, 'utf8')
+            .digest('hex')
+            .toLocaleUpperCase();
+    }
 
+    getFirstFiveHashSubstring(password){
+        return this.hashPassword(password).substring(0,5).toLocaleUpperCase();
+    }
 
-async function searchPwnedPasswords(passwordSubstring){
-    const url = 'https://api.pwnedpasswords.com/range/'+passwordSubstring;
-    const response = await fetch(url);
-    return await response.text();
-}
+    async callPwnedPasswords(passwordSubstring){
+        const url = 'https://api.pwnedpasswords.com/range/'+passwordSubstring;
+        const response = await fetch(url);
+        return await response.text();
+    }
 
-searchPwnedPasswords(firstFiveHashSubstring).then(passwords => {
-    passwordMatch(passwords)
-});
+    findPasswordMatch(hashedPasswordLst, password) {
+        let lst = hashedPasswordLst.split("\n");
 
-function passwordMatch(passwordHashLst) {
-    let lst = passwordHashLst.split("\n");
-
-    Object.values(lst).forEach(
-        (value) =>{
-            if(value.includes(hashToSearch)){
-                let breachCount = value.split(':')[1].slice(0, -1);
-                let warning = `${password} was found ${breachCount} times`;
-                console.log(warning);
+        Object.values(lst).forEach(
+            (value) =>{
+                if(value.includes(this.hashPassword(password).slice(5))){
+                    let breachCount = value.split(':')[1].slice(0, -1);
+                    let warning = `${password} was found ${breachCount} times`;
+                    console.log(warning);
+                }
             }
-        }
-    );
+        );
+    }
 }
+
