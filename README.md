@@ -6,7 +6,8 @@ The code implements this using k-Anonymity model that allows a password to be se
 
 Please dont type your actual password into a random box on the internet....
 
-![alt text](public\img\PwnedPasswordsOverview.png)
+![PwnedPasswordsOverview](https://user-images.githubusercontent.com/18630526/57489323-910d7e00-72ad-11e9-83f2-8b4582b66703.png)
+
 
 ## Built With
 
