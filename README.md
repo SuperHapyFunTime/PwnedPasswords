@@ -6,6 +6,8 @@ The code implements this using k-Anonymity model that allows a password to be se
 
 Please dont type your actual password into a random box on the internet....
 
+![alt text](public\img\PwnedPasswordsOverview.png)
+
 ## Built With
 
 * [Express - Node.js](https://expressjs.com/) - The web framework 
