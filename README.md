@@ -6,9 +6,6 @@ The code implements this using k-Anonymity model that allows a password to be se
 
 Please dont type your actual password into a random box on the internet....
 
-
-```
-
 ## Built With
 
 * [Express - Node.js](https://expressjs.com/) - The web framework 
@@ -24,4 +21,3 @@ This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
 distribute this software
-
